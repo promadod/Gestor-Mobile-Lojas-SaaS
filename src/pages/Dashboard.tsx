@@ -271,20 +271,6 @@ export default function DashboardPage() {
                 <section className="glass-card p-4">
                   <SectionTitle icon="💳">Formas de pagamento</SectionTitle>
                   <ChartPagamentos data={resumo.por_pagamento} />
-                  <ul className="mt-3 space-y-2">
-                    {resumo.por_pagamento.map((p) => (
-                      <li key={p.codigo} className="flex justify-between text-sm">
-                        <span className="text-muted flex items-center gap-2">
-                          <span
-                            className="w-2 h-2 rounded-full inline-block"
-                            style={{ backgroundColor: p.cor || '#9c27b0' }}
-                          />
-                          {p.nome} ({p.qtd})
-                        </span>
-                        <span className="text-white font-medium">{formatBRL(p.total)}</span>
-                      </li>
-                    ))}
-                  </ul>
                 </section>
 
                 {(resumo.ranking_entregadores?.length ?? 0) > 0 && (

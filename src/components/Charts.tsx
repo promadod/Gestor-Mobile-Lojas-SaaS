@@ -74,10 +74,13 @@ export function ChartPagamentos({ data }: { data: PorPagamento[] }) {
       </div>
       <ul className="w-full space-y-2">
         {filtered.map((item, i) => (
-          <li key={item.codigo} className="flex justify-between text-sm">
+          <li key={`${item.codigo}-${i}`} className="flex justify-between text-sm">
             <span className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full" style={{ background: CORES[i % CORES.length] }} />
-              {item.nome}
+              <span
+                className="w-2 h-2 rounded-full"
+                style={{ background: item.cor || CORES[i % CORES.length] }}
+              />
+              {item.nome} ({item.qtd ?? 0})
             </span>
             <span className="text-white font-medium">{formatBRL(item.total)}</span>
           </li>
