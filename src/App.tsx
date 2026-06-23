@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import LoginPage from './pages/Login';
 import DashboardPage from './pages/Dashboard';
+import ClientesPage from './pages/Clientes';
 
 function PrivateRoute({ children }: { children: JSX.Element }) {
   const token = localStorage.getItem('gestor_token');
@@ -17,6 +18,14 @@ export default function App() {
         element={
           <PrivateRoute>
             <DashboardPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/clientes"
+        element={
+          <PrivateRoute>
+            <ClientesPage />
           </PrivateRoute>
         }
       />

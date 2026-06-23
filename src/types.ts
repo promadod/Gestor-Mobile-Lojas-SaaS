@@ -33,6 +33,31 @@ export interface PorPagamento {
   nome: string;
   total: number;
   qtd: number;
+  cor?: string;
+  icone?: string;
+}
+
+export interface RankingEntregador {
+  entregador_id: number;
+  nome: string;
+  qtd_entregas: number;
+  total_vendido: number;
+}
+
+export interface RankingBairro {
+  bairro: string;
+  qtd_pedidos: number;
+  total: number;
+}
+
+export interface RankingRecompra {
+  cliente_id: number;
+  cliente: string;
+  bairro: string;
+  produto: string;
+  dias_sem_compra: number;
+  ultima_compra: string;
+  whatsapp_link?: string;
 }
 
 export interface Financeiro {
@@ -59,6 +84,9 @@ export interface ResumoGestor {
   grafico_7_dias: GraficoDia[];
   por_loja: PorLoja[];
   por_pagamento: PorPagamento[];
+  ranking_entregadores?: RankingEntregador[];
+  ranking_bairros?: RankingBairro[];
+  ranking_recompra?: RankingRecompra[];
   financeiro: Financeiro;
   alertas: Alertas;
 }
@@ -74,6 +102,30 @@ export interface VendaResumo {
   status_label: string;
   forma_pagamento: string;
   eh_fiado: boolean;
+}
+
+export interface ClienteBairro {
+  bairro: string;
+  total: number;
+  ativos: number;
+  inativos: number;
+  clientes: {
+    id: number;
+    nome: string;
+    telefone: string;
+    whatsapp: string;
+    bairro: string;
+    ultima_compra: string | null;
+    status: string;
+  }[];
+}
+
+export interface StatsClientes {
+  total: number;
+  ativos_30d: number;
+  inativos_60d: number;
+  por_bairro: ClienteBairro[];
+  loja_id?: string;
 }
 
 export interface LoginResponse {

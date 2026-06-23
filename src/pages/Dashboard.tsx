@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   fetchResumo,
   fetchVendas,
@@ -106,9 +106,12 @@ export default function DashboardPage() {
             <p className="text-xs text-muted">Olá,</p>
             <p className="font-semibold text-white">{user?.nome || 'Gestor'}</p>
           </div>
-          <button onClick={sair} className="text-xs text-muted hover:text-accent transition">
-            Sair
-          </button>
+          <div className="flex items-center gap-3">
+            <Link to="/clientes" className="text-xs text-accent hover:underline">Clientes</Link>
+            <button onClick={sair} className="text-xs text-muted hover:text-accent transition">
+              Sair
+            </button>
+          </div>
         </div>
       </header>
 
@@ -268,7 +271,93 @@ export default function DashboardPage() {
                 <section className="glass-card p-4">
                   <SectionTitle icon="💳">Formas de pagamento</SectionTitle>
                   <ChartPagamentos data={resumo.por_pagamento} />
+                  <ul className="mt-3 space-y-2">
+                    {resumo.por_pagamento.map((p) => (
+                      <li key={p.codigo} className="flex justify-between text-sm">
+                        <span className="text-muted flex items-center gap-2">
+                          <span
+                            className="w-2 h-2 rounded-full inline-block"
+                            style={{ backgroundColor: p.cor || '#9c27b0' }}
+                          />
+                          {p.nome} ({p.qtd})
+                        </span>
+                        <span className="text-white font-medium">{formatBRL(p.total)}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </section>
+
+                {(resumo.ranking_entregadores?.length ?? 0) > 0 && (
+                  <section className="glass-card p-4">
+                    <SectionTitle icon="🏍️">Ranking entregadores</SectionTitle>
+                    <ul className="space-y-3">
+                      {resumo.ranking_entregadores!.map((e, i) => (
+                        <li key={e.entregador_id} className="flex items-center gap-3">
+                          <span className="w-7 h-7 rounded-full bg-purple-500/20 text-purple-300 text-xs flex items-center justify-center font-bold">
+                            {i + 1}
+                          </span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-white text-sm truncate">{e.nome}</p>
+                            <p className="text-xs text-muted">{e.qtd_entregas} entregas</p>
+                          </div>
+                          <span className="text-accent font-semibold text-sm">
+                            {formatBRL(e.total_vendido)}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                )}
+
+                {(resumo.ranking_bairros?.length ?? 0) > 0 && (
+                  <section className="glass-card p-4">
+                    <SectionTitle icon="📍">Pedidos por bairro</SectionTitle>
+                    <ul className="space-y-3">
+                      {resumo.ranking_bairros!.map((b, i) => (
+                        <li key={b.bairro} className="flex items-center gap-3">
+                          <span className="w-7 h-7 rounded-full bg-amber-500/20 text-amber-300 text-xs flex items-center justify-center font-bold">
+                            {i + 1}
+                          </span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-white text-sm truncate">{b.bairro}</p>
+                            <p className="text-xs text-muted">{b.qtd_pedidos} pedidos</p>
+                          </div>
+                          <span className="text-accent font-semibold text-sm">
+                            {formatBRL(b.total)}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                )}
+
+                {(resumo.ranking_recompra?.length ?? 0) > 0 && (
+                  <section className="glass-card p-4">
+                    <SectionTitle icon="🔄">Recompra — sem comprar</SectionTitle>
+                    <ul className="space-y-3">
+                      {resumo.ranking_recompra!.map((r) => (
+                        <li key={`${r.cliente_id}-${r.produto}`} className="border-b border-white/5 pb-3 last:border-0">
+                          <div className="flex justify-between items-start gap-2">
+                            <div>
+                              <p className="text-white text-sm font-medium">{r.cliente}</p>
+                              <p className="text-xs text-muted">{r.produto} · {r.dias_sem_compra} dias</p>
+                            </div>
+                            {r.whatsapp_link && (
+                              <a
+                                href={r.whatsapp_link}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-xs bg-green-600/30 text-green-300 px-2 py-1 rounded-lg"
+                              >
+                                WhatsApp
+                              </a>
+                            )}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                )}
 
                 <section className="glass-card p-4">
                   <SectionTitle icon="💰">Financeiro</SectionTitle>

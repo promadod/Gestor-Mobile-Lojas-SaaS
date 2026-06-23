@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { LoginResponse, ResumoGestor, VendaResumo } from './types';
+import type { LoginResponse, ResumoGestor, StatsClientes, VendaResumo } from './types';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
@@ -35,6 +35,21 @@ export async function fetchResumo(params: ResumoParams = {}): Promise<ResumoGest
 
 export async function fetchVendas(params: ResumoParams = {}): Promise<{ vendas: VendaResumo[] }> {
   const { data } = await api.get('/api/gestor/vendas/', { params });
+  return data;
+}
+
+export async function fetchClientes(params: ResumoParams = {}): Promise<StatsClientes> {
+  const { data } = await api.get<StatsClientes>('/api/gestor/clientes/', { params });
+  return data;
+}
+
+export async function fetchCampanha(
+  publico: 'ativos' | 'inativos',
+  params: ResumoParams = {},
+): Promise<{ links: { nome: string; bairro: string; whatsapp_link: string }[]; desconto: number }> {
+  const { data } = await api.get('/api/gestor/campanha/', {
+    params: { ...params, publico },
+  });
   return data;
 }
 
