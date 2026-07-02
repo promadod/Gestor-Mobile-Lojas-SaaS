@@ -108,6 +108,7 @@ export default function DashboardPage() {
           </div>
           <div className="flex items-center gap-3">
             <Link to="/clientes" className="text-xs text-accent hover:underline">Clientes</Link>
+            <Link to="/estoque" className="text-xs text-accent hover:underline">Estoque</Link>
             <button onClick={sair} className="text-xs text-muted hover:text-accent transition">
               Sair
             </button>

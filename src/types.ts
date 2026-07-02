@@ -138,3 +138,23 @@ export interface LoginResponse {
 }
 
 export type Periodo = 'hoje' | 'ontem' | '7d' | 'mes' | 'custom';
+
+export interface ItemEstoqueGestor {
+  id: number;
+  nome: string;
+  cheios: number;
+  unidade: string;
+  estoque_baixo: boolean;
+  vazios?: number;
+  controla_vasilhame_vazio?: boolean;
+  loja?: string;
+  loja_id?: number;
+}
+
+export interface EstoqueGestor {
+  itens: ItemEstoqueGestor[];
+  total_itens: number;
+  itens_baixo: number;
+  multi_loja: boolean;
+  loja_id?: string;
+}
