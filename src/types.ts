@@ -66,7 +66,9 @@ export interface Financeiro {
   receitas_extras: number;
   total_receber: number;
   total_pagar: number;
+  custo_mercadorias: number;
   saldo: number;
+  lucro_liquido: number;
 }
 
 export interface Alertas {

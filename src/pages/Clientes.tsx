@@ -1,12 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  fetchCampanha,
-  fetchClientes,
-  getStoredUser,
-  logout,
-  type ResumoParams,
-} from '../api/client';
+import { fetchCampanha, fetchClientes, getStoredUser, isAuthError, logout, type ResumoParams } from '../api/client';
 import type { StatsClientes } from '../types';
 import { ErrorBox, KpiCard, LoadingSpinner, SectionTitle } from '../components/Ui';
 
@@ -29,6 +23,7 @@ export default function ClientesPage() {
       const data = await fetchClientes(params);
       setStats(data);
     } catch (err: unknown) {
+      if (isAuthError(err)) return;
       const msg =
         err && typeof err === 'object' && 'response' in err
           ? (err as { response?: { data?: { erro?: string } } }).response?.data?.erro

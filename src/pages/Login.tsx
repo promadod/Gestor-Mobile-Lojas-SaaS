@@ -1,6 +1,21 @@
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { login, saveSession } from '../api/client';
+
+function extrairErroLogin(err: unknown): string {
+  if (axios.isAxiosError(err) && err.response?.data) {
+    const data = err.response.data as {
+      erro?: string;
+      detail?: string;
+      non_field_errors?: string[];
+    };
+    if (data.erro) return data.erro;
+    if (data.non_field_errors?.[0]) return data.non_field_errors[0];
+    if (typeof data.detail === 'string') return data.detail;
+  }
+  return 'Usuário ou senha inválidos.';
+}
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -21,8 +36,8 @@ export default function LoginPage() {
       }
       saveSession(data.token, data);
       navigate('/');
-    } catch {
-      setErro('Usuário ou senha inválidos.');
+    } catch (err) {
+      setErro(extrairErroLogin(err));
     } finally {
       setLoading(false);
     }

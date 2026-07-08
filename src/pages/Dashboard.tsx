@@ -5,6 +5,7 @@ import {
   fetchVendas,
   formatBRL,
   getStoredUser,
+  isAuthError,
   logout,
   type ResumoParams,
 } from '../api/client';
@@ -71,6 +72,7 @@ export default function DashboardPage() {
       setResumo(r);
       setVendas(v.vendas);
     } catch (err: unknown) {
+      if (isAuthError(err)) return;
       const msg =
         err && typeof err === 'object' && 'response' in err
           ? (err as { response?: { data?: { erro?: string } } }).response?.data?.erro
@@ -198,9 +200,9 @@ export default function DashboardPage() {
                 accent="amber"
               />
               <KpiCard
-                label="Saldo período"
-                value={formatBRL(resumo.financeiro.saldo)}
-                sub={`Receber ${formatBRL(resumo.financeiro.total_receber)}`}
+                label="Lucro líquido"
+                value={formatBRL(resumo.financeiro.lucro_liquido ?? resumo.financeiro.saldo)}
+                sub={`CMV ${formatBRL(resumo.financeiro.custo_mercadorias ?? 0)}`}
                 accent="teal"
               />
             </div>
@@ -353,10 +355,11 @@ export default function DashboardPage() {
                     <Row label="Recebimentos fiado" value={formatBRL(resumo.financeiro.receitas_fiado)} />
                     <Row label="Outras receitas" value={formatBRL(resumo.financeiro.receitas_extras)} />
                     <Row label="Despesas" value={formatBRL(resumo.financeiro.total_pagar)} negative />
+                    <Row label="Custo mercadorias (CMV)" value={formatBRL(resumo.financeiro.custo_mercadorias ?? 0)} negative />
                     <div className="border-t border-white/10 pt-2 flex justify-between font-semibold">
-                      <span className="text-white">Saldo</span>
-                      <span className={resumo.financeiro.saldo >= 0 ? 'text-accent' : 'text-red-400'}>
-                        {formatBRL(resumo.financeiro.saldo)}
+                      <span className="text-white">Lucro líquido</span>
+                      <span className={(resumo.financeiro.lucro_liquido ?? resumo.financeiro.saldo) >= 0 ? 'text-accent' : 'text-red-400'}>
+                        {formatBRL(resumo.financeiro.lucro_liquido ?? resumo.financeiro.saldo)}
                       </span>
                     </div>
                   </div>

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchEstoque, getStoredUser, logout, type ResumoParams } from '../api/client';
+import { fetchEstoque, getStoredUser, isAuthError, logout, type ResumoParams } from '../api/client';
 import type { EstoqueGestor } from '../types';
 import { ErrorBox, KpiCard, LoadingSpinner, SectionTitle } from '../components/Ui';
 
@@ -21,6 +21,7 @@ export default function EstoquePage() {
       const data = await fetchEstoque(params);
       setDados(data);
     } catch (err: unknown) {
+      if (isAuthError(err)) return;
       const msg =
         err && typeof err === 'object' && 'response' in err
           ? (err as { response?: { data?: { erro?: string } } }).response?.data?.erro

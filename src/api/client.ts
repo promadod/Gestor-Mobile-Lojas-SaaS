@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { LoginResponse, ResumoGestor, StatsClientes, VendaResumo, EstoqueGestor } from './types';
+import type { LoginResponse, ResumoGestor, StatsClientes, VendaResumo, EstoqueGestor } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
@@ -16,6 +16,21 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error?.response?.status;
+    const url = error?.config?.url || '';
+    if (status === 401 && !url.includes('/api/login/')) {
+      logout();
+      if (!window.location.pathname.startsWith('/login')) {
+        window.location.replace('/login');
+      }
+    }
+    return Promise.reject(error);
+  },
+);
+
 export async function login(username: string, password: string): Promise<LoginResponse> {
   const { data } = await api.post<LoginResponse>('/api/login/', { username, password });
   return data;
@@ -26,6 +41,7 @@ export interface ResumoParams {
   periodo?: string;
   data_inicio?: string;
   data_fim?: string;
+  limite?: string;
 }
 
 export async function fetchResumo(params: ResumoParams = {}): Promise<ResumoGestor> {
@@ -80,4 +96,13 @@ export function getStoredUser(): LoginResponse | null {
 
 export function formatBRL(value: number): string {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+export function isAuthError(err: unknown): boolean {
+  return (
+    !!err &&
+    typeof err === 'object' &&
+    'response' in err &&
+    (err as { response?: { status?: number } }).response?.status === 401
+  );
 }
